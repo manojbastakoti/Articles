@@ -81,8 +81,43 @@ const loginUser= async(req,res)=>{
     });
 };
 
+const changePassword=async(req,res)=>{
+    try {
+        const id=req.params.id;
+        const body=req.body;
+        const user= await UserModel.findOne({_id:id});
+
+        const result = await user.comparePassword(body.old_password);
+
+        if(!result){
+            res.json({
+                success:false,
+                message:"Old password is wrong!"
+            });
+            return false;
+        }
+
+        // const change= await UserModel.findByIdAndUpdate({_id:id},{
+        //     password:body.new_password,
+        // });
+
+        user.password= body.new_password;
+        user.save();
+
+        res.json({
+            success:true,
+            message:"Password changed successfully",
+        });
+
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 module.exports ={
     getUsers,
     addUser,
     loginUser,
+    changePassword,
 };

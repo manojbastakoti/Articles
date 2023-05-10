@@ -2,7 +2,8 @@ const express = require("express")
 require("dotenv").config()
 const fileUpload =require("express-fileupload")
 const {getUsers, addUser,loginUser}= require("./handlers/userHandler");
-const{getArticles,addArticle,editArticle}= require("./handlers/articleHandler")
+const{getArticles,addArticle,editArticle}= require("./handlers/articleHandler");
+const { authenticateToken } = require("./middleware/authenticate");
 const app = express();
 require("./database/connection");
 
@@ -13,7 +14,7 @@ app.use(fileUpload());
 app.use("/uploads",express.static("uploads"));
 
 //user
-app.get('/users',getUsers);
+app.get('/users',authenticateToken, getUsers);
 app.post('/user/add',addUser);
 app.post('/user/login', loginUser);
 

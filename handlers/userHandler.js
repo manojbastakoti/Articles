@@ -1,3 +1,4 @@
+const {createToken} = require("../utils");
 let opt="";
 
 const generateOTP= () =>{
@@ -9,12 +10,19 @@ const generateOTP= () =>{
 };
  
 const UserModel=require("../models/User");
-const getUsers =(req,res)=>{
-    const user={
-        name:"Manoj",
-        age:24,
-    };
-    res.json(user);
+const getUsers =async(req,res)=>{
+    try {
+        const users= await UserModel.find()
+        console.log(users);
+        res.json({
+            users:users,
+        });
+        
+    } catch (error) {
+        console.log(error)
+    }
+
+
 };
 
 const addUser = (req,res) => {
@@ -60,9 +68,16 @@ const loginUser= async(req,res)=>{
         });
         return false;
     }
+
+    const token = createToken({data:result});
+    user.token=token;
+    await user.save();
     res.json({
         success:true,
-        message:"Login successfull"
+        message:"Login successfull",
+        data:{
+            token
+        }
     });
 };
 

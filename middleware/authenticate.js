@@ -8,7 +8,7 @@ module.exports={
 
             const tokenInfo=verifyToken(token);
             console.log(tokenInfo);
-            next()
+            next();
         } catch (error) {
             console.log(error)
         }

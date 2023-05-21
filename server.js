@@ -1,12 +1,14 @@
 const express = require("express")
 require("dotenv").config()
 const fileUpload =require("express-fileupload")
+var cors = require('cors')
 const {getUsers, addUser,loginUser,changePassword}= require("./handlers/userHandler");
 const{getArticles,addArticle,editArticle,deleteArticle}= require("./handlers/articleHandler");
 const { authenticateToken } = require("./middleware/authenticate");
 const app = express();
 require("./database/connection");
 
+app.use(cors({credentials:true, origin: 'http://localhost:5173',}))
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 app.use(fileUpload());

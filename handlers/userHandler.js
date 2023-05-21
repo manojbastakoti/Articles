@@ -25,7 +25,7 @@ const getUsers =async(req,res)=>{
 
 };
 
-const addUser = (req,res) => {
+const addUser = async(req,res) => {
     const body = req.body;
     // console.log(body.name);
 
@@ -35,6 +35,17 @@ const addUser = (req,res) => {
         password:body.password,
 
     });
+
+    const emailALreadyExists= await UserModel.findOne({email:body.email});
+
+    if (emailALreadyExists){
+        res.json({
+            success:false,
+            message:'Email already exists!',
+        });
+        return false;
+    }
+
     const otpValue = generateOTP();
     user.save();
     res.json({
@@ -72,6 +83,9 @@ const loginUser= async(req,res)=>{
     const token = createToken({data:result});
     user.token=token;
     await user.save();
+
+    res.cookie("token",token)
+
     res.json({
         success:true,
         message:"Login successfull",
